@@ -1,11 +1,11 @@
 ---
-name: git-commits
-description: "Use when the user asks to 'show my commits', 'list my commits', 'git commits', 'commit summary', 'commit log', 'what did I commit', 'show my work log', 'zoznam commitov', 'čo som commitol', or wants a summary of their git commit activity across repositories for a date range. Invoked as /git-commits with date parameters in YYYY-MM-DD format."
+name: git-commits-history
+description: "Use when the user asks to 'show my commits', 'list my commits', 'git commits history', 'commit summary', 'commit log', 'what did I commit', 'show my work log', 'zoznam commitov', 'história commitov', 'čo som commitol', or wants a summary of their git commit activity across repositories for a date range. Invoked as /git-commits-history with date parameters in YYYY-MM-DD format."
 argument-hint: [from YYYY-MM-DD | alias] [to YYYY-MM-DD]
 allowed-tools: [Bash, Read]
 ---
 
-# Git Commits Summary
+# Git Commits History Summary
 
 Fetch and display a summary of all git commits across repositories for a date range.
 
@@ -33,14 +33,14 @@ Expected format: `[from_date] [to_date]` where dates are `YYYY-MM-DD` or a **nam
 Aliases are case-insensitive. Hyphens and underscores are interchangeable.
 
 Examples:
-- `/git-commits` — current month (1st to today)
-- `/git-commits today` — only today
-- `/git-commits yesterday` — only yesterday
-- `/git-commits last-week` — previous Monday to Sunday
-- `/git-commits last_month` — previous month (full)
-- `/git-commits this-year` — January 1st to today
-- `/git-commits 2026-03-01 2026-03-31` — specific range
-- `/git-commits 2026-03-01` — from March 1st until today
+- `/git-commits-history` — current month (1st to today)
+- `/git-commits-history today` — only today
+- `/git-commits-history yesterday` — only yesterday
+- `/git-commits-history last-week` — previous Monday to Sunday
+- `/git-commits-history last_month` — previous month (full)
+- `/git-commits-history this-year` — January 1st to today
+- `/git-commits-history 2026-03-01 2026-03-31` — specific range
+- `/git-commits-history 2026-03-01` — from March 1st until today
 
 ## Instructions
 
@@ -56,12 +56,12 @@ Examples:
    To find it dynamically, use this approach:
    ```bash
    # Find the plugin install directory (works regardless of marketplace install path)
-   PLUGIN_DIR=$(find ~/.claude/plugins -path "*/git-commits/skills/git-commits/scripts/git_commits.py" -print -quit 2>/dev/null | head -1)
+   PLUGIN_DIR=$(find ~/.claude/plugins -path "*/git-commits-history/skills/git-commits-history/scripts/git_commits.py" -print -quit 2>/dev/null | head -1)
    ```
 
 3. Run the script (use `python3` on macOS/Linux, `python` on Windows):
    ```bash
-   python3 "$(find ~/.claude/plugins -path '*/git-commits/skills/git-commits/scripts/git_commits.py' -print -quit 2>/dev/null)" <from_date> <to_date>
+   python3 "$(find ~/.claude/plugins -path '*/git-commits-history/skills/git-commits-history/scripts/git_commits.py' -print -quit 2>/dev/null)" <from_date> <to_date>
    ```
 
 4. **Output formatting — follow this EXACTLY:**

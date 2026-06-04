@@ -1,6 +1,8 @@
-# git-commits — Claude Code Plugin
+# git-commits-history — Claude Code Plugin
 
-A Claude Code plugin that fetches and summarizes your git commits across **all repositories** for a given date range.
+> **Renamed from `git-commits` in v2.0.0.** If you have the previous `git-commits@wamesk` plugin installed, see [Migration from `git-commits`](#migration-from-git-commits) below.
+
+A Claude Code plugin that fetches and summarizes your git commits history across **all repositories** for a given date range.
 
 Scans local git repos, groups commits by day, and uses AI to generate summaries of what was worked on — based on commit messages and changed file names.
 
@@ -21,7 +23,7 @@ Works with any git hosting — GitHub, GitLab, Bitbucket, self-hosted, or local-
 ## Example Output
 
 ```
-# Git Commits: 2026-03-03 — 2026-03-04
+# Git Commits History: 2026-03-03 — 2026-03-04
 Author: John Doe | Total commits: 4
 Sources: 2 local repos
 
@@ -52,7 +54,7 @@ and auth config updates in bosp-shoes/b2b.
 
 - **Python 3.6+** (uses only stdlib, no pip dependencies)
 - **Git** installed and available in PATH
-- **Claude Code CLI** (for `/git-commits` slash command usage)
+- **Claude Code CLI** (for `/git-commits-history` slash command usage)
 
 ## Installation
 
@@ -67,33 +69,33 @@ First, add the `wamesk` marketplace (one-time):
 Then install the plugin:
 
 ```
-/plugin install git-commits@wamesk
+/plugin install git-commits-history@wamesk
 ```
 
-After installation, restart Claude Code session for the `/git-commits` command to become available.
+After installation, restart Claude Code session for the `/git-commits-history` command to become available.
 
 ### Manual
 
 ```bash
-git clone git@github.com:wamesk/claude-code-plugin-git-commits.git
+git clone git@github.com:wamesk/claude-code-plugin-git-commits-history.git
 ```
 
 Then in Claude Code:
 
 ```
-claude --plugin-dir ~/path/to/claude-code-plugin-git-commits
+claude --plugin-dir ~/path/to/claude-code-plugin-git-commits-history
 ```
 
 ### Configuration
 
 On first run, if no config exists, the plugin will ask for your settings and create the config automatically.
 
-Config is stored at `~/.claude/plugins/data/git-commits-wamesk/config.json` — this location **survives plugin updates**.
+Config is stored at `~/.claude/plugins/data/git-commits-wamesk/config.json` — this location **survives plugin updates and the rename from `git-commits`**.
 
 You can also create it manually or run:
 
 ```bash
-python3 skills/git-commits/scripts/git_commits.py --init
+python3 skills/git-commits-history/scripts/git_commits.py --init
 ```
 
 ## Usage
@@ -101,14 +103,14 @@ python3 skills/git-commits/scripts/git_commits.py --init
 ### In Claude Code CLI
 
 ```
-/git-commits                             # current month (1st to today)
-/git-commits today                       # only today
-/git-commits yesterday                   # only yesterday
-/git-commits last-week                   # previous Monday to Sunday
-/git-commits last_month                  # previous full month
-/git-commits this-year                   # January 1st to today
-/git-commits 2026-03-01 2026-03-31       # specific date range
-/git-commits 2026-03-01                  # from date until today
+/git-commits-history                             # current month (1st to today)
+/git-commits-history today                       # only today
+/git-commits-history yesterday                   # only yesterday
+/git-commits-history last-week                   # previous Monday to Sunday
+/git-commits-history last_month                  # previous full month
+/git-commits-history this-year                   # January 1st to today
+/git-commits-history 2026-03-01 2026-03-31       # specific date range
+/git-commits-history 2026-03-01                  # from date until today
 ```
 
 Supported aliases: `today`, `yesterday`, `this-week`, `last-week`, `this-month`, `last-month`, `this-year`, `last-year`. Hyphens and underscores are interchangeable.
@@ -116,10 +118,23 @@ Supported aliases: `today`, `yesterday`, `this-week`, `last-week`, `this-month`,
 ### Standalone (without Claude)
 
 ```bash
-python3 skills/git-commits/scripts/git_commits.py                       # current month
-python3 skills/git-commits/scripts/git_commits.py 2026-03-01 2026-03-31 # specific range
-python3 skills/git-commits/scripts/git_commits.py 2026-03-01            # from date until today
+python3 skills/git-commits-history/scripts/git_commits.py                       # current month
+python3 skills/git-commits-history/scripts/git_commits.py 2026-03-01 2026-03-31 # specific range
+python3 skills/git-commits-history/scripts/git_commits.py 2026-03-01            # from date until today
 ```
+
+## Migration from `git-commits`
+
+This plugin was previously named `git-commits` (v1.x). Because plugin renames cannot be applied automatically by Claude Code's plugin manager, follow these steps:
+
+```
+/plugin uninstall git-commits@wamesk
+/plugin install git-commits-history@wamesk
+```
+
+**Your configuration is preserved.** The data directory `~/.claude/plugins/data/git-commits-wamesk/config.json` is intentionally kept under the old name, so the renamed plugin picks it up automatically with zero migration steps.
+
+The old `git-commits` marketplace entry has been replaced with a deprecation stub that displays the same instructions when invoked.
 
 ## Configuration Reference
 
@@ -177,7 +192,7 @@ Create an [app password](https://bitbucket.org/account/settings/app-passwords/) 
 In Claude Code:
 
 ```
-/plugin uninstall git-commits@wamesk
+/plugin uninstall git-commits-history@wamesk
 ```
 
 Config at `~/.claude/plugins/data/git-commits-wamesk/config.json` is preserved.
@@ -185,15 +200,15 @@ Config at `~/.claude/plugins/data/git-commits-wamesk/config.json` is preserved.
 ## Project Structure
 
 ```
-claude-code-plugin-git-commits/
+claude-code-plugin-git-commits-history/
 ├── .claude-plugin/
-│   └── plugin.json              # Plugin manifest
+│   └── plugin.json                       # Plugin manifest
 ├── skills/
-│   └── git-commits/
-│       ├── SKILL.md             # Skill definition (triggers, instructions)
+│   └── git-commits-history/
+│       ├── SKILL.md                      # Skill definition (triggers, instructions)
 │       └── scripts/
-│           └── git_commits.py   # Main Python script
-├── config.example.json          # Configuration template
+│           └── git_commits.py            # Main Python script
+├── config.example.json                   # Configuration template
 └── README.md
 ```
 
