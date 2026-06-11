@@ -81,20 +81,20 @@ Examples:
 
    **c) Markdown table with ALL of these columns:**
 
-   | Time | Delta | Project | Message | AI Summary | Changes | Link |
-   |------|-------|---------|---------|------------|---------|------|
-   | 09:11 | — | org/backend | FIX(auth): Redirect web requests to login | Auth redirect fix for web routes | 1 file ±16 | [link](url) |
+   | Time | Delta | Project | Message | Files | Changes | Link |
+   |------|-------|---------|---------|-------|---------|------|
+   | 09:11 | — | org/backend | FIX(auth): Redirect web requests to login | routes/web.php, app/Http/Middleware/Authenticate.php | 1 file ±16 | [link](url) |
 
    Column details:
    - **Time** — commit time (HH:MM)
    - **Delta** — time since previous commit that day ("—" for first commit of each day)
    - **Project** — repository name (e.g. org/repo)
    - **Message** — the ORIGINAL commit message text, unchanged
-   - **AI Summary** — YOU generate this: a 5-10 word description analyzing the changed FILE NAMES to explain what the commit actually did. Examples: "Auth redirect fix for web routes", "Catalog PDF generation with summary view", "Nova admin panel catalog fields update"
+   - **Files** — comma-joined list of the changed file names (truncated with "+N more" when there are many)
    - **Changes** — file count and line changes (e.g. "3 files ±42")
    - **Link** — clickable link to the commit URL: `[link](url)`
 
-   **IMPORTANT:** Do NOT skip any columns. Do NOT merge Message and AI Summary. Do NOT put the summary at the end — it goes under the day heading, before the table.
+   **IMPORTANT:** Do NOT skip any columns. Do NOT rename or merge columns. Keep the file names in the **Files** column exactly as emitted by the script. Do NOT put the day summary at the end — it goes under the day heading, before the table.
 
 5. If the script fails:
    - If config.json is missing: tell the user to run `python3 <script_path> --init` to create config.json, then edit it with their settings. Config is stored persistently at `~/.claude/plugins/data/git-commits-wamesk/config.json` and survives plugin updates.

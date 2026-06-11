@@ -1,8 +1,8 @@
 {
   "name": "git-commits-history",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Fetch and summarize git commits history across all local and remote repositories for a date range. Supports GitHub, GitLab, Bitbucket, and any git hosting. Renamed from git-commits in v2.0.0.",
   "author": {
-    "name": "sucho"
+    "name": "Stanislav Červeňák"
   }
 }

@@ -373,8 +373,12 @@ def get_github_commits(config, since, until):
     commits = []
     page = 1
 
+    # Make the upper bound inclusive of the whole 'until' day, consistent with the
+    # local/GitLab/Bitbucket fetchers which all add a day to the end boundary.
+    until_plus = (datetime.strptime(until, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
+
     while page <= 10:  # Max 10 pages (1000 results)
-        query = f"author:{username}+committer-date:{since}..{until}"
+        query = f"author:{username}+committer-date:{since}..{until_plus}"
         endpoint = f"/search/commits?q={query}&sort=committer-date&order=asc&per_page=100&page={page}"
 
         if use_gh_cli:
@@ -553,37 +557,41 @@ def get_bitbucket_commits(config, since, until):
         full_name = repo.get("full_name", "")
         web_url = repo.get("links", {}).get("html", {}).get("href", "")
 
-        # Bitbucket commits endpoint doesn't filter by author, so we fetch and filter
-        repo_commits_url = f"/repositories/{full_name}/commits?pagelen=100"
-        data = bitbucket_api_request(repo_commits_url, token)
-        if not data:
-            continue
+        # Bitbucket commits endpoint doesn't filter by author, so we fetch and filter.
+        # Follow the 'next' cursor so repos with >100 commits are not silently truncated.
+        commits_url = f"/repositories/{full_name}/commits?pagelen=100"
+        while commits_url:
+            data = bitbucket_api_request(commits_url, token)
+            if not data:
+                break
 
-        for c in data.get("values", []):
-            commit_date = c.get("date", "")
-            author_raw = c.get("author", {}).get("raw", "")
-            if not any(em in author_raw for em in api_emails):
-                continue
-
-            # Check date range
-            try:
-                dt = datetime.fromisoformat(commit_date.replace("Z", "+00:00"))
-                since_dt = datetime.strptime(since, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-                until_dt = datetime.strptime(until, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(days=1)
-                if not (since_dt <= dt < until_dt):
+            for c in data.get("values", []):
+                commit_date = c.get("date", "")
+                author_raw = c.get("author", {}).get("raw", "")
+                if not any(em in author_raw for em in api_emails):
                     continue
-            except ValueError:
-                continue
 
-            sha = c.get("hash", "")
-            commits.append({
-                "sha": sha,
-                "date_iso": commit_date,
-                "message": c.get("message", "").split("\n")[0].strip(),
-                "project": full_name,
-                "url": f"{web_url}/commits/{sha}" if web_url else None,
-                "source": "bitbucket_api",
-            })
+                # Check date range
+                try:
+                    dt = datetime.fromisoformat(commit_date.replace("Z", "+00:00"))
+                    since_dt = datetime.strptime(since, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+                    until_dt = datetime.strptime(until, "%Y-%m-%d").replace(tzinfo=timezone.utc) + timedelta(days=1)
+                    if not (since_dt <= dt < until_dt):
+                        continue
+                except ValueError:
+                    continue
+
+                sha = c.get("hash", "")
+                commits.append({
+                    "sha": sha,
+                    "date_iso": commit_date,
+                    "message": c.get("message", "").split("\n")[0].strip(),
+                    "project": full_name,
+                    "url": f"{web_url}/commits/{sha}" if web_url else None,
+                    "source": "bitbucket_api",
+                })
+
+            commits_url = data.get("next", "").replace("https://api.bitbucket.org/2.0", "") if data.get("next") else None
 
     return commits
 
